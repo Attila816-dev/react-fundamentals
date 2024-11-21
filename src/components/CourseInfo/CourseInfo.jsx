@@ -23,7 +23,7 @@
 // * use selectors from store/selectors.js to get coursesList, authorsList from store
 
 import React from "react";
-
+import { Button } from "../../common";
 import { formatCreationDate, getCourseDuration } from "../../helpers";
 
 import styles from "./styles.module.css";
@@ -39,36 +39,51 @@ export const CourseInfo = ({
   showCourseId,
 }) => {
   // write your code here
+  const currentCourse = coursesList.find(
+    (course) => course.id === showCourseId
+  );
+
+  if (!currentCourse) {
+    return <></>;
+  }
 
   return (
     <div className={styles.container} data-testid="courseInfo">
-      <h1>Course title</h1>
+      <h1>{currentCourse.title}</h1>
       <div className={styles.courseInfo}>
-        <p className={styles.description}>Course description</p>
+        <p className={styles.description}>{currentCourse.description}</p>
         <div>
           <p>
             <b>ID: </b>
-            id
+            {currentCourse.id}
           </p>
           <p>
             <b>Duration: </b>
-            duration (use getCourseDuration)
+            {getCourseDuration(currentCourse.duration)}
           </p>
           <p>
             <b>Created: </b>
-            creation date (use formatCreationDate)
+            {formatCreationDate(currentCourse.creationDate)}
           </p>
           <div>
             <b>Authors</b>
             <ul className={styles.authorsList}>
-              //use '.map' to render authors list with 'li' tag
+              {currentCourse.authors.map((authorId) => {
+                const author = authorsList.find(
+                  (author) => author.id === authorId
+                );
+                return <li key={author.id}>{author.name}</li>;
+              })}
             </ul>
           </div>
         </div>
       </div>
-      // Module 1: reuse Button component for 'onBack' functionality // Module
-      2: use 'react-router-dom' 'Link' component for button 'Back' and remove
-      'onBack' prop
+      <Button
+        buttonText="Back to courses"
+        data-testid="back"
+        handleClick={onBack}
+      ></Button>
+      {/* // Module 2: use 'react-router-dom' 'Link' component for button 'Back' and remove 'onBack' prop */}
     </div>
   );
 };

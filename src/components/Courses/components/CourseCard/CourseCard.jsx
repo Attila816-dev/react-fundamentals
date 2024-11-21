@@ -39,34 +39,49 @@ import React from "react";
 
 import { getCourseDuration, formatCreationDate } from "../../../../helpers";
 
-import deleteIcon from "../../../../assets/deleteButtonIcon.svg";
-import editIcon from "../../../../assets/editButtonIcon.svg";
+// import deleteIcon from "../../../../assets/deleteButtonIcon.svg";
+// import editIcon from "../../../../assets/editButtonIcon.svg";
+import { Button } from "../../../../common";
 
 import styles from "./styles.module.css";
 
 export const CourseCard = ({ course, handleShowCourse, authorsList }) => {
   // write your code here
 
+  const authorNames = course.authors
+    .map((authorId) => {
+      const author = authorsList.find((author) => author.id === authorId);
+      return author.name;
+    })
+    .join(", ");
+
   return (
     <div className={styles.cardContainer} data-testid="courseCard">
       <div className={styles.cardText}>
-        <h2>Title</h2>
-        <p>Description</p>
+        <h2>{course.title}</h2>
+        <p>{course.description}</p>
       </div>
       <div className={styles.cardDetails}>
         <p>
           <b>Authors: </b>
-          authors list
+          {authorNames.length > 50
+            ? `${authorNames.substring(0, 47)}...`
+            : authorNames}
         </p>
         <p>
           <b>Duration:</b>
-          <span>duration</span>
+          <span>{getCourseDuration(course.duration)} hours</span>
         </p>
         <p>
           <b>Created: </b>
-          <span>date</span>
+          <span>{formatCreationDate(course.creationDate)}</span>
         </p>
         <div className={styles.buttonsContainer}>
+          <Button
+            data-testid="showCourse"
+            buttonText="Show course"
+            handleClick={() => handleShowCourse(course.id)}
+          ></Button>
           {/* 
 				reuse Button component for 'Show course' button 
 				reuse Button	component with deleteButtonIcon from 'src/assets' for 'Delete' button

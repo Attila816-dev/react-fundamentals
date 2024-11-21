@@ -1,4 +1,5 @@
-import React from "react";
+import { Button } from "../../common/Button";
+import { Logo } from "./components/Logo";
 
 import styles from "./styles.module.css";
 
@@ -34,12 +35,24 @@ import styles from "./styles.module.css";
 export const Header = () => {
   // write your code here
 
+  // const handleButtonClick = () => {
+  //   if (isAuthorized) {
+  //     setIsAuthorized(false); // set a new value for isAuthorized
+  //     setUserName("Anonym"); // set a new value for userName
+  //   }
+  // };
+
   return (
     <div className={styles.headerContainer}>
-      // use Logo component
+      <Logo />
       <div className={styles.userContainer}>
         <p className={styles.userName}>Harry Potter</p>
-        // reuse Button component for 'Login / Logout' button
+        <Button buttonText="Logout" data-testid="logout"></Button>
+        {/* <Button
+          handleClick={handleButtonClick}
+          buttonText={isAuthorized ? "Logout" : "Login"}
+          data-testid="login"
+        ></Button> */}
       </div>
     </div>
   );

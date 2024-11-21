@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./App.module.css";
+import { Header, Courses, CourseInfo } from "./components";
+import { mockedAuthorsList, mockedCoursesList } from "./constants";
 
 // Module 1:
 // * use mockedAuthorsList and mockedCoursesList mocked data
@@ -10,7 +12,7 @@ import styles from "./App.module.css";
 // Module 2:
 // * use mockedAuthorsList and mockedCoursesList mocked data
 // * remove useState for selected courseId
-// * use hook useState for storing list of courses and authors 
+// * use hook useState for storing list of courses and authors
 // * import Routes and Route from 'react-router-dom'
 // * Add Routes to the container div (do not include Header to the Routes since header will not be changed with pages)
 // ** TASK DESCRIPTION ** - https://ebook.learn.epam.com/react-fundamentals/docs/module-2/home-task/components#add-the-router-to-the-app-component
@@ -31,11 +33,31 @@ import styles from "./App.module.css";
 
 function App() {
   // write your code here
+  const [showCourseId, setShowCourseId] = useState(null);
+
+  const handleShowCourse = (courseId) => {
+    setShowCourseId(courseId);
+  };
 
   return (
     <div className={styles.wrapper}>
-      {/* place Header component */}
-      <div className={styles.container}>{/* place other components */}</div>
+      <Header />
+      <div className={styles.container}>
+        {showCourseId ? (
+          <CourseInfo
+            coursesList={mockedCoursesList}
+            authorsList={mockedAuthorsList}
+            onBack={() => setShowCourseId(null)}
+            showCourseId={showCourseId}
+          />
+        ) : (
+          <Courses
+            coursesList={mockedCoursesList}
+            authorsList={mockedAuthorsList}
+            handleShowCourse={handleShowCourse}
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React from "react";
-
+import { CourseCard, EmptyCourseList } from "./components";
+import { Button } from "../../common";
 import styles from "./styles.module.css";
 
 // Module 1:
@@ -41,9 +42,28 @@ export const Courses = ({ coursesList, authorsList, handleShowCourse }) => {
   return (
     <>
       <div className={styles.panel}>
-        // reuse Button component for 'ADD NEW COURSE' button
+        {!coursesList.length ? (
+          <EmptyCourseList data-testid="emptyContainer" />
+        ) : (
+          <></>
+        )}
       </div>
-      // use '.map' array method to render all courses. Use CourseCard component
+      {coursesList.map((course) => {
+        return (
+          <CourseCard
+            key={course.id}
+            course={course}
+            authorsList={authorsList}
+            handleShowCourse={handleShowCourse}
+          />
+        );
+      })}
+      <Button
+        onClick={() => {
+          /* logic to add new course */
+        }}
+        buttonText="ADD NEW COURSE"
+      ></Button>
     </>
   );
 };
