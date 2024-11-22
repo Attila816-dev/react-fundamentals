@@ -1,5 +1,5 @@
-import React from "react";
-import { CourseCard, EmptyCourseList } from "./components";
+import { useState } from "react";
+import { CourseCard, EmptyCourseList, SearchBar } from "./components";
 import { Button } from "../../common";
 import styles from "./styles.module.css";
 
@@ -39,16 +39,38 @@ export const Courses = ({ coursesList, authorsList, handleShowCourse }) => {
   // for EmptyCourseList component container use data-testid="emptyContainer" attribute
   // for button in EmptyCourseList component add data-testid="addCourse" attribute
 
+  const [filteredCourses, setFilteredCourses] = useState(coursesList);
+
+  const handleSearchSubmit = (input) => {
+    if (input.length === 0) {
+      setFilteredCourses(coursesList);
+    } else {
+      let filteredCourses = coursesList.filter(
+        (course) =>
+          course.title.toLowerCase().includes(input.toLowerCase()) ||
+          course.id.toLowerCase().includes(input.toLowerCase())
+      );
+      setFilteredCourses(filteredCourses);
+    }
+  };
+
   return (
     <>
+      <section className="row mt-3 justify-content-between">
+        <SearchBar
+          className="d-inline-flex col-md-6"
+          onSubmit={handleSearchSubmit}
+          inputPlaceholder="Enter course name or id..."
+        />
+      </section>
       <div className={styles.panel}>
-        {!coursesList.length ? (
+        {!filteredCourses.length ? (
           <EmptyCourseList data-testid="emptyContainer" />
         ) : (
           <></>
         )}
       </div>
-      {coursesList.map((course) => {
+      {filteredCourses.map((course) => {
         return (
           <CourseCard
             key={course.id}
@@ -58,12 +80,15 @@ export const Courses = ({ coursesList, authorsList, handleShowCourse }) => {
           />
         );
       })}
-      <Button
-        onClick={() => {
-          /* logic to add new course */
-        }}
-        buttonText="ADD NEW COURSE"
-      ></Button>
+      {filteredCourses.length ? (
+        <Button
+          type="button"
+          buttonText="Add new course"
+          handleClick={() => {}}
+        />
+      ) : (
+        <></>
+      )}
     </>
   );
 };

@@ -9,10 +9,11 @@ import styles from "./styles.module.css";
 export const Button = ({
   buttonText,
   handleClick,
+  className,
   "data-testid": dataTestId,
 }) => (
   <button
-    className={styles.button}
+    className={className || styles.button}
     onClick={handleClick}
     data-testid={dataTestId}
   >
