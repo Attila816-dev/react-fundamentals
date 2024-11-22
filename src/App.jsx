@@ -1,7 +1,6 @@
-import React, { useState } from "react";
 import styles from "./App.module.css";
-import { Header, Courses, CourseInfo } from "./components";
-import { mockedAuthorsList, mockedCoursesList } from "./constants";
+import { Header, Courses, CourseInfo, Login, Registration } from "./components";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 // Module 1:
 // * use mockedAuthorsList and mockedCoursesList mocked data
@@ -33,30 +32,17 @@ import { mockedAuthorsList, mockedCoursesList } from "./constants";
 
 function App() {
   // write your code here
-  const [showCourseId, setShowCourseId] = useState(null);
-
-  const handleShowCourse = (courseId) => {
-    setShowCourseId(courseId);
-  };
-
   return (
     <div className={styles.wrapper}>
       <Header />
       <div className={styles.container}>
-        {showCourseId ? (
-          <CourseInfo
-            coursesList={mockedCoursesList}
-            authorsList={mockedAuthorsList}
-            onBack={() => setShowCourseId(null)}
-            showCourseId={showCourseId}
-          />
-        ) : (
-          <Courses
-            coursesList={mockedCoursesList}
-            authorsList={mockedAuthorsList}
-            handleShowCourse={handleShowCourse}
-          />
-        )}
+        <Routes>
+          <Route path="/" element={<Courses />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registration" element={<Registration />} />
+          <Route path="/courses/:courseId" element={<CourseInfo />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
       </div>
     </div>
   );

@@ -23,24 +23,21 @@
 // * use selectors from store/selectors.js to get coursesList, authorsList from store
 
 import React from "react";
-import { Button } from "../../common";
+import { useParams, Link } from "react-router-dom";
 import { formatCreationDate, getCourseDuration } from "../../helpers";
-
+import { mockedAuthorsList, mockedCoursesList } from "../../constants";
 import styles from "./styles.module.css";
 
 // props description
 // * 'coursesList' - list of all courses. You need it to get chosen course from the list
 // * 'authorsList' - list of all authors. You need it to get authors' names for chosen course
 // * 'showCourseId' - id of chosen course. Use it to find needed course on the 'coursesList'.
-export const CourseInfo = ({
-  coursesList,
-  authorsList,
-  onBack,
-  showCourseId,
-}) => {
+export const CourseInfo = () => {
+  const { courseId } = useParams();
+
   // write your code here
-  const currentCourse = coursesList.find(
-    (course) => course.id === showCourseId
+  const currentCourse = mockedCoursesList.find(
+    (course) => course.id === courseId
   );
 
   if (!currentCourse) {
@@ -69,7 +66,7 @@ export const CourseInfo = ({
             <b>Authors</b>
             <ul className={styles.authorsList}>
               {currentCourse.authors.map((authorId) => {
-                const author = authorsList.find(
+                const author = mockedAuthorsList.find(
                   (author) => author.id === authorId
                 );
                 return <li key={author.id}>{author.name}</li>;
@@ -78,12 +75,13 @@ export const CourseInfo = ({
           </div>
         </div>
       </div>
-      <Button
-        buttonText="Back to courses"
+      <Link
+        to="/courses"
+        className="btn btn-outline-primary mt-3"
         data-testid="back"
-        handleClick={onBack}
-      ></Button>
-      {/* // Module 2: use 'react-router-dom' 'Link' component for button 'Back' and remove 'onBack' prop */}
+      >
+        {"< Back to courses"}
+      </Link>
     </div>
   );
 };

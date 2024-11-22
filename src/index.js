@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { BrowserRouter } from "react-router-dom";
 
 // Module 2:
 // * import BrowserRouter from 'react-router-dom'
@@ -12,4 +13,8 @@ import "./index.css";
 // * wrap your App + Browser with Redux Provider in src/index.js
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+root.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);

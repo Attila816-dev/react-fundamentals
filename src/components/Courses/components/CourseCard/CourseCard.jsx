@@ -36,16 +36,16 @@
 //   ** CourseCard should display created date in the correct format.
 
 import React from "react";
+import { Link } from "react-router-dom";
 
 import { getCourseDuration, formatCreationDate } from "../../../../helpers";
 
 // import deleteIcon from "../../../../assets/deleteButtonIcon.svg";
 // import editIcon from "../../../../assets/editButtonIcon.svg";
-import { Button } from "../../../../common";
 
 import styles from "./styles.module.css";
 
-export const CourseCard = ({ course, handleShowCourse, authorsList }) => {
+export const CourseCard = ({ course, authorsList }) => {
   // write your code here
 
   const authorNames = course.authors
@@ -77,11 +77,9 @@ export const CourseCard = ({ course, handleShowCourse, authorsList }) => {
           <span>{formatCreationDate(course.creationDate)}</span>
         </p>
         <div className={styles.buttonsContainer}>
-          <Button
-            data-testid="showCourse"
-            buttonText="Show course"
-            handleClick={() => handleShowCourse(course.id)}
-          ></Button>
+          <Link data-testid="showCourse" to={`/courses/${course.id}`}>
+            Show course info
+          </Link>
           {/* 
 				reuse Button component for 'Show course' button 
 				reuse Button	component with deleteButtonIcon from 'src/assets' for 'Delete' button

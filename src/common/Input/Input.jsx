@@ -8,18 +8,22 @@ export const Input = ({
   placeholderText,
   labelText,
   labelClassName,
+  labelExtras,
   inputValue,
+  required,
   onChange,
   "data-testid": dataTestId,
 }) => (
   <label className={labelClassName ?? styles.label}>
     {labelText}
+    {labelExtras}
     <input
       onChange={onChange}
       placeholder={placeholderText}
       className={className ?? styles.input}
       value={inputValue}
       data-testid={dataTestId}
+      required={required}
     />
   </label>
 );

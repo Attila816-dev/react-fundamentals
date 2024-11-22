@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { CourseCard, EmptyCourseList, SearchBar } from "./components";
 import { Button } from "../../common";
 import styles from "./styles.module.css";
+import { mockedAuthorsList, mockedCoursesList } from "../../constants";
 
 // Module 1:
 // * render list of components using 'CourseCard' component for each course
@@ -33,19 +35,19 @@ import styles from "./styles.module.css";
 //   ** Courses should display amount of CourseCard equal length of courses array.
 //   ** CourseForm should be shown after a click on the "Add new course" button.
 
-export const Courses = ({ coursesList, authorsList, handleShowCourse }) => {
+export const Courses = () => {
   // write your code here
 
   // for EmptyCourseList component container use data-testid="emptyContainer" attribute
   // for button in EmptyCourseList component add data-testid="addCourse" attribute
-
-  const [filteredCourses, setFilteredCourses] = useState(coursesList);
+  let navigate = useNavigate();
+  const [filteredCourses, setFilteredCourses] = useState(mockedCoursesList);
 
   const handleSearchSubmit = (input) => {
     if (input.length === 0) {
-      setFilteredCourses(coursesList);
+      setFilteredCourses(mockedCoursesList);
     } else {
-      let filteredCourses = coursesList.filter(
+      let filteredCourses = mockedCoursesList.filter(
         (course) =>
           course.title.toLowerCase().includes(input.toLowerCase()) ||
           course.id.toLowerCase().includes(input.toLowerCase())
@@ -75,8 +77,7 @@ export const Courses = ({ coursesList, authorsList, handleShowCourse }) => {
           <CourseCard
             key={course.id}
             course={course}
-            authorsList={authorsList}
-            handleShowCourse={handleShowCourse}
+            authorsList={mockedAuthorsList}
           />
         );
       })}
@@ -84,7 +85,9 @@ export const Courses = ({ coursesList, authorsList, handleShowCourse }) => {
         <Button
           type="button"
           buttonText="Add new course"
-          handleClick={() => {}}
+          handleClick={() => {
+            navigate("/courses/add");
+          }}
         />
       ) : (
         <></>
