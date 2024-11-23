@@ -10,11 +10,13 @@ export const Button = ({
   buttonText,
   handleClick,
   className,
+  type,
   "data-testid": dataTestId,
 }) => (
   <button
     className={className || styles.button}
     onClick={handleClick}
+    type={type || "button"}
     data-testid={dataTestId}
   >
     {buttonText}

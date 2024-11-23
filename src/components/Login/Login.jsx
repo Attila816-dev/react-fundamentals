@@ -23,15 +23,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "../../common";
 
 import styles from "./styles.module.css";
+import { login } from "../../services";
 
 export const Login = () => {
   let navigate = useNavigate();
 
+  const [showError, setShowError] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    if (localStorage.getItem("userToken")) {
+    if (localStorage.getItem("token")) {
       navigate("/courses");
     }
   }, [navigate]);
@@ -46,12 +48,7 @@ export const Login = () => {
   };
 
   async function loginAuth(body) {
-    const response = await fetch("http://localhost:4000/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await response.json();
+    const data = await login(body);
 
     if (!data.successful) {
       throw new Error(data.result);
@@ -63,8 +60,13 @@ export const Login = () => {
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
     try {
+      setShowError(true);
+      if (!email || !password) {
+        throw new Error("Email and password are required.");
+      }
+
       const data = await loginAuth({ email, password });
-      localStorage.setItem("userToken", data.result);
+      localStorage.setItem("token", data.result);
       navigate("/courses");
     } catch (error) {
       console.log(error);
@@ -77,8 +79,6 @@ export const Login = () => {
       <h1>Login</h1>
       <div className={styles.formContainer}>
         <form onSubmit={handleLoginSubmit}>
-          {/* // reuse Input component for email field // reuse Input component for
-          password field // reuse Button component for 'Login' button */}
           <div className="form-group mt-3">
             <Input
               className="form-control"
@@ -87,10 +87,10 @@ export const Login = () => {
               inputPlaceholder="Enter email..."
               type="email"
               id="email"
-              labelExtras={<abbr title="Email is required.">*</abbr>}
               required={true}
               onChange={handleEmailInput}
             />
+            {showError && !email ? <label>Email is required.</label> : null}
           </div>
           <div className="form-group  mt-3">
             <Input
@@ -101,9 +101,11 @@ export const Login = () => {
               type="password"
               id="password"
               required={true}
-              labelExtras={<abbr title="Password is required.">*</abbr>}
               onChange={handlePasswordInput}
             />
+            {showError && !password ? (
+              <label>Password is required.</label>
+            ) : null}
           </div>
           <Button
             className="btn btn-primary mt-3"
@@ -112,9 +114,8 @@ export const Login = () => {
           />
         </form>
         <p>
+          If you don't have an account you may{" "}
           <Link to="/registration">Go to Registration page</Link>
-          {/* If you don't have an account you may&nbsp; // use <Link /> component
-          for navigation to Registration page */}
         </p>
       </div>
     </div>

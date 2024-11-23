@@ -1,9 +1,7 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { CourseCard, EmptyCourseList, SearchBar } from "./components";
-import { Button } from "../../common";
 import styles from "./styles.module.css";
-import { mockedAuthorsList, mockedCoursesList } from "../../constants";
 
 // Module 1:
 // * render list of components using 'CourseCard' component for each course
@@ -35,19 +33,25 @@ import { mockedAuthorsList, mockedCoursesList } from "../../constants";
 //   ** Courses should display amount of CourseCard equal length of courses array.
 //   ** CourseForm should be shown after a click on the "Add new course" button.
 
-export const Courses = () => {
+export const Courses = ({ coursesList, authorsList }) => {
   // write your code here
 
   // for EmptyCourseList component container use data-testid="emptyContainer" attribute
   // for button in EmptyCourseList component add data-testid="addCourse" attribute
   let navigate = useNavigate();
-  const [filteredCourses, setFilteredCourses] = useState(mockedCoursesList);
+  const [filteredCourses, setFilteredCourses] = useState(coursesList);
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleSearchSubmit = (input) => {
     if (input.length === 0) {
-      setFilteredCourses(mockedCoursesList);
+      setFilteredCourses(coursesList);
     } else {
-      let filteredCourses = mockedCoursesList.filter(
+      let filteredCourses = coursesList.filter(
         (course) =>
           course.title.toLowerCase().includes(input.toLowerCase()) ||
           course.id.toLowerCase().includes(input.toLowerCase())
@@ -77,18 +81,14 @@ export const Courses = () => {
           <CourseCard
             key={course.id}
             course={course}
-            authorsList={mockedAuthorsList}
+            authorsList={authorsList}
           />
         );
       })}
       {filteredCourses.length ? (
-        <Button
-          type="button"
-          buttonText="Add new course"
-          handleClick={() => {
-            navigate("/courses/add");
-          }}
-        />
+        <Link to="/courses/add" data-testid="addCourse">
+          Add new course
+        </Link>
       ) : (
         <></>
       )}

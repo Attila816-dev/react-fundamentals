@@ -35,24 +35,24 @@ import styles from "./styles.module.css";
 export const Header = () => {
   // write your code here
 
-  // const handleButtonClick = () => {
-  //   if (isAuthorized) {
-  //     setIsAuthorized(false); // set a new value for isAuthorized
-  //     setUserName("Anonym"); // set a new value for userName
-  //   }
-  // };
+  const handleLogout = () => {
+    if (localStorage.getItem("token")) {
+      localStorage.removeItem("token");
+    }
+  };
 
   return (
     <div className={styles.headerContainer}>
       <Logo />
       <div className={styles.userContainer}>
         <p className={styles.userName}>Harry Potter</p>
-        <Button buttonText="Logout" data-testid="logout"></Button>
-        {/* <Button
-          handleClick={handleButtonClick}
-          buttonText={isAuthorized ? "Logout" : "Login"}
-          data-testid="login"
-        ></Button> */}
+        {localStorage.getItem("token") && (
+          <Button
+            buttonText="Logout"
+            data-testid="logout"
+            handleClick={handleLogout}
+          ></Button>
+        )}
       </div>
     </div>
   );

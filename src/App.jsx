@@ -1,6 +1,14 @@
 import styles from "./App.module.css";
-import { Header, Courses, CourseInfo, Login, Registration } from "./components";
+import {
+  Header,
+  Courses,
+  CourseForm,
+  CourseInfo,
+  Login,
+  Registration,
+} from "./components";
 import { Navigate, Route, Routes } from "react-router-dom";
+import { mockedAuthorsList, mockedCoursesList } from "./constants";
 
 // Module 1:
 // * use mockedAuthorsList and mockedCoursesList mocked data
@@ -37,10 +45,28 @@ function App() {
       <Header />
       <div className={styles.container}>
         <Routes>
-          <Route path="/" element={<Courses />} />
+          <Route
+            path="/"
+            element={
+              <Courses
+                coursesList={mockedCoursesList}
+                authorsList={mockedAuthorsList}
+              />
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
-          <Route path="/courses/:courseId" element={<CourseInfo />} />
+          <Route
+            path="/courses/:courseId"
+            element={
+              <CourseInfo
+                coursesList={mockedCoursesList}
+                authorsList={mockedAuthorsList}
+              />
+            }
+          />
+          <Route path="/courses/add" element={<CourseForm />} />
+          <Route path="/courses/update/:courseId" element={<CourseForm />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>

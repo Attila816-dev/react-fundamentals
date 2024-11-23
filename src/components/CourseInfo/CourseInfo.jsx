@@ -25,23 +25,30 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { formatCreationDate, getCourseDuration } from "../../helpers";
-import { mockedAuthorsList, mockedCoursesList } from "../../constants";
 import styles from "./styles.module.css";
 
 // props description
 // * 'coursesList' - list of all courses. You need it to get chosen course from the list
 // * 'authorsList' - list of all authors. You need it to get authors' names for chosen course
 // * 'showCourseId' - id of chosen course. Use it to find needed course on the 'coursesList'.
-export const CourseInfo = () => {
+export const CourseInfo = ({ coursesList, authorsList }) => {
   const { courseId } = useParams();
 
   // write your code here
-  const currentCourse = mockedCoursesList.find(
-    (course) => course.id === courseId
-  );
+  const currentCourse = coursesList?.find((course) => course.id === courseId);
 
   if (!currentCourse) {
-    return <></>;
+    return (
+      <>
+        <Link
+          to="/courses"
+          className="btn btn-outline-primary mt-3"
+          data-testid="back"
+        >
+          Back to courses
+        </Link>
+      </>
+    );
   }
 
   return (
@@ -66,7 +73,7 @@ export const CourseInfo = () => {
             <b>Authors</b>
             <ul className={styles.authorsList}>
               {currentCourse.authors.map((authorId) => {
-                const author = mockedAuthorsList.find(
+                const author = authorsList.find(
                   (author) => author.id === authorId
                 );
                 return <li key={author.id}>{author.name}</li>;
@@ -80,7 +87,7 @@ export const CourseInfo = () => {
         className="btn btn-outline-primary mt-3"
         data-testid="back"
       >
-        {"< Back to courses"}
+        Back to courses
       </Link>
     </div>
   );

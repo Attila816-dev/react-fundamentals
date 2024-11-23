@@ -13,12 +13,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "../../common";
+import { createUser } from "../../services";
 
 import styles from "./styles.module.css";
 
 export const Registration = () => {
   // write your code here
   const navigate = useNavigate();
+  const [showError, setShowError] = useState(false);
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +29,12 @@ export const Registration = () => {
     event.preventDefault();
 
     try {
+      setShowError(true);
+
+      if (!userName || !email || !password) {
+        throw new Error("UserName, Email and password are required.");
+      }
+
       await registrationAuth({
         name: userName,
         email: email,
@@ -39,14 +47,9 @@ export const Registration = () => {
   };
 
   async function registrationAuth(body) {
-    const response = await fetch("http://localhost:4000/register", {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = await response.json();
+    const data = await createUser(body);
 
-    if (data.errors) {
+    if (data?.errors) {
       throw new Error(`${data.errors.join(",")}`);
     } else {
       navigate("/login");
@@ -77,10 +80,10 @@ export const Registration = () => {
               labelText="Name"
               inputPlaceholder="Enter name..."
               id="userName"
-              labelExtras={<abbr title="Name is required.">*</abbr>}
               required={true}
               onChange={handleUserNameInput}
             />
+            {showError && !userName ? <label>name is required.</label> : null}
           </div>
           <div className="form-group mt-3">
             <Input
@@ -89,10 +92,10 @@ export const Registration = () => {
               labelText="Email"
               inputPlaceholder="Enter email..."
               id="email"
-              labelExtras={<abbr title="Email is required.">*</abbr>}
               required={true}
               onChange={handleEmailInput}
             />
+            {showError && !email ? <label>email is required.</label> : null}
           </div>
           <div className="form-group  mt-3">
             <Input
@@ -101,10 +104,12 @@ export const Registration = () => {
               labelText="Password"
               inputPlaceholder="Enter password..."
               id="password"
-              labelExtras={<abbr title="Password is required.">*</abbr>}
               required={true}
               onChange={handlePasswordInput}
             />
+            {showError && !password ? (
+              <label>Password is required.</label>
+            ) : null}
           </div>
           <Button
             className="btn btn-primary mt-3"
@@ -113,8 +118,8 @@ export const Registration = () => {
           />
         </form>
         <p>
+          If you have an account you may{" "}
           <Link to="/login">Go to Login page</Link>
-          {/* If you have an account you may&nbsp; // use <Link /> component for navigation to Login page */}
         </p>
       </div>
     </div>
