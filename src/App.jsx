@@ -65,8 +65,14 @@ function App() {
               />
             }
           />
-          <Route path="/courses/add" element={<CourseForm />} />
-          <Route path="/courses/update/:courseId" element={<CourseForm />} />
+          <Route
+            path="/courses/add"
+            element={<CourseForm authorsList={mockedAuthorsList} />}
+          />
+          <Route
+            path="/courses/update/:courseId"
+            element={<CourseForm authorsList={mockedAuthorsList} />}
+          />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>

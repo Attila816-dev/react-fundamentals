@@ -47,21 +47,22 @@
 //   **  CourseForm 'Delete author' button click should delete an author from the course list.
 
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button, Input } from "../../common";
+import { AuthorItem } from "./components";
 import { mockedCoursesList } from "../../constants";
-import { getCourseDuration } from "../../helpers";
+import { getCourseDuration, getCurrentDate } from "../../helpers";
 import styles from "./styles.module.css";
 
-export const CourseForm = () => {
+export const CourseForm = ({ authorsList }) => {
   //write your code here
   let { courseId } = useParams();
-  //   let navigate = useNavigate();
+  let navigate = useNavigate();
   const course = mockedCoursesList.find((course) => course.id === courseId);
 
   const [title, setTitle] = useState(course?.title ?? "");
   const [description, setDescription] = useState(course?.description ?? "");
-
+  const courseAuthors = courseId ? [...course.authors] : [];
   //   const [author, setAuthor] = useState("");
   //   const [courseAuthors, setCourseAuthors] = useState(
   //     courseId ? [...course.authors] : []
@@ -81,17 +82,45 @@ export const CourseForm = () => {
     setDuration(event.target.value);
   };
 
+  // title, description length should be at least 2 characters;
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (courseAuthors.length === 0) {
+      alert("All fields are required.");
+      return false;
+    }
+
+    if (courseId) {
+      let course = mockedCoursesList.find((course) => course.id === courseId);
+      course.title = title;
+      course.description = description;
+      course.duration = Number(duration);
+      course.authors = courseAuthors;
+    } else {
+      mockedCoursesList.push({
+        title: title,
+        description,
+        creationDate: getCurrentDate(),
+        duration: Number(duration),
+        authors: courseAuthors,
+      });
+    }
+
+    navigate("/courses");
+  };
+
   return (
     <div className={styles.container}>
       {courseId ? <h2>Update course</h2> : <h2>Create new course</h2>}
 
-      <form>
+      <form className="container mt-3" onSubmit={handleSubmit}>
         <section className="row justify-content-between mt-3">
           <Input
             className="col-6"
             labelClassName="h6"
             labelText="Title"
-            labelExtras={<abbr title="Title is required.">*</abbr>}
             inputPlaceholder="Enter title..."
             type="text"
             id="title"
@@ -105,9 +134,6 @@ export const CourseForm = () => {
         <section className="row mt-3">
           <label className="h6" htmlFor="courseDescription">
             Description
-            <abbr title="This field is required and it should be at least 2 characters long.">
-              *
-            </abbr>
           </label>
           <textarea
             id="description"
@@ -127,11 +153,6 @@ export const CourseForm = () => {
             <div className={styles.duration}>
               <Input
                 labelText="Course duration"
-                labelExtras={
-                  <abbr title="Duration is required and it should be at least 1 minutes long.">
-                    *
-                  </abbr>
-                }
                 inputPlaceholder="Enter duration in minutes..."
                 type="number"
                 id="duration"
@@ -154,14 +175,22 @@ export const CourseForm = () => {
               <h3>Authors List</h3>
 
               {/* // use 'map' to display all available autors. Reuse 'AuthorItem' component for each author */}
+              {authorsList.map((author) => {
+                return <AuthorItem key={author.id} author={author} />;
+              })}
             </div>
           </div>
 
           <div className={styles.courseAuthorsContainer}>
             <h2>Course authors</h2>
-            {/* // use 'map' to display course autors. Reuse 'AuthorItem' component for each author */}
-            <p className={styles.notification}>List is empty</p>
-            {/* // display this paragraph if there are no authors in the course */}
+
+            {courseAuthors.length ? (
+              courseAuthors.map((author) => {
+                return <AuthorItem key={author.id} author={author} />;
+              })
+            ) : (
+              <p className={styles.notification}>List is empty</p>
+            )}
           </div>
         </div>
       </form>
