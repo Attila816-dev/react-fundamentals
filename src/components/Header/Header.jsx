@@ -1,6 +1,7 @@
 import { Button } from "../../common/Button";
 import { Logo } from "./components/Logo";
-
+import { redirect, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import styles from "./styles.module.css";
 
 // Module 1:
@@ -34,24 +35,41 @@ import styles from "./styles.module.css";
 
 export const Header = () => {
   // write your code here
+  const location = useLocation();
+  const [showLogout, setShowLogout] = useState(true);
 
   const handleLogout = () => {
     if (localStorage.getItem("token")) {
       localStorage.removeItem("token");
     }
+
+    redirect("/login");
   };
+
+  useEffect(() => {
+    setShowLogout(
+      location.pathname.indexOf("/registration") === -1 &&
+        location.pathname.indexOf("/login") === -1
+    ); // will be called once location was changed
+  }, [location]);
+
+  //LOGOUT button and user's name should not be on Login and Registration pages.
 
   return (
     <div className={styles.headerContainer}>
       <Logo />
       <div className={styles.userContainer}>
-        <p className={styles.userName}>Harry Potter</p>
-        {localStorage.getItem("token") && (
-          <Button
-            buttonText="Logout"
-            data-testid="logout"
-            handleClick={handleLogout}
-          ></Button>
+        {showLogout && (
+          <>
+            <p className={styles.userName}>Harry Potter</p>
+            {localStorage.getItem("token") && (
+              <Button
+                buttonText="Logout"
+                data-testid="logout"
+                handleClick={handleLogout}
+              ></Button>
+            )}
+          </>
         )}
       </div>
     </div>
