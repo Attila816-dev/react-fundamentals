@@ -7,8 +7,9 @@ import {
   Login,
   Registration,
 } from "./components";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { mockedAuthorsList, mockedCoursesList } from "./constants";
+import { getCurrentDate } from "./helpers";
 
 // Module 1:
 // * use mockedAuthorsList and mockedCoursesList mocked data
@@ -39,6 +40,42 @@ import { mockedAuthorsList, mockedCoursesList } from "./constants";
 // * get authorized user info by 'user/me' GET request if 'localStorage' contains token
 
 function App() {
+  let navigate = useNavigate();
+
+  const handleUpdateCourse = (course) => {
+    let existingCourse = mockedCoursesList.find((c) => c.id === course.Id);
+    existingCourse.title = course.title;
+    existingCourse.description = course.description;
+    existingCourse.duration = course.duration;
+    existingCourse.authors = course.authors;
+    navigate("/courses");
+  };
+
+  const handleAddCourse = (course) => {
+    mockedCoursesList.push({
+      title: course.title,
+      description: course.description,
+      creationDate: getCurrentDate(),
+      duration: course.duration,
+      authors: course.authors,
+    });
+    navigate("/courses");
+  };
+
+  const handleCreateAuthor = (authorName) => {
+    if (authorName.length < 2) {
+      alert("Author name should be longer than 2 characters.");
+      return false;
+    } else if (mockedAuthorsList.find((author) => author.name === authorName)) {
+      alert("This author is already in the list.");
+    } else {
+      mockedAuthorsList.push({
+        name: authorName,
+        id: mockedAuthorsList.length + 1,
+      });
+    }
+  };
+
   // write your code here
   return (
     <div className={styles.wrapper}>
@@ -67,11 +104,23 @@ function App() {
           />
           <Route
             path="/courses/add"
-            element={<CourseForm authorsList={mockedAuthorsList} />}
+            element={
+              <CourseForm
+                authorsList={mockedAuthorsList}
+                createCourse={handleAddCourse}
+                createAuthor={handleCreateAuthor}
+              />
+            }
           />
           <Route
             path="/courses/update/:courseId"
-            element={<CourseForm authorsList={mockedAuthorsList} />}
+            element={
+              <CourseForm
+                authorsList={mockedAuthorsList}
+                createCourse={handleUpdateCourse}
+                createAuthor={handleCreateAuthor}
+              />
+            }
           />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

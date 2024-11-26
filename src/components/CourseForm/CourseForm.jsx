@@ -47,26 +47,23 @@
 //   **  CourseForm 'Delete author' button click should delete an author from the course list.
 
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button, Input } from "../../common";
-import { AuthorItem } from "./components";
+import { AuthorItem, CreateAuthor } from "./components";
 import { mockedCoursesList } from "../../constants";
-import { getCourseDuration, getCurrentDate } from "../../helpers";
+import { getCourseDuration } from "../../helpers";
 import styles from "./styles.module.css";
 
-export const CourseForm = ({ authorsList }) => {
+export const CourseForm = ({ authorsList, createCourse, createAuthor }) => {
   //write your code here
   let { courseId } = useParams();
-  let navigate = useNavigate();
   const course = mockedCoursesList.find((course) => course.id === courseId);
 
   const [title, setTitle] = useState(course?.title ?? "");
   const [description, setDescription] = useState(course?.description ?? "");
-  const courseAuthors = courseId ? [...course.authors] : [];
-  //   const [author, setAuthor] = useState("");
-  //   const [courseAuthors, setCourseAuthors] = useState(
-  //     courseId ? [...course.authors] : []
-  //   );
+  const [courseAuthors, setCourseAuthors] = useState(
+    courseId ? [...course.authors] : []
+  );
 
   const [duration, setDuration] = useState(course?.duration ?? 0);
 
@@ -82,6 +79,23 @@ export const CourseForm = ({ authorsList }) => {
     setDuration(event.target.value);
   };
 
+  const handleAddAuthor = (authorId) => {
+    let newAuthorList = [...courseAuthors];
+
+    if (newAuthorList.find((author) => author.id === authorId)) {
+      alert("This author is already in the course author list.");
+      return;
+    }
+
+    let newAuthor = authorsList.find((author) => author.id === authorId);
+    newAuthorList.push(newAuthor);
+    setCourseAuthors(newAuthorList);
+  };
+
+  const handleDeleteAuthor = (authorId) => {
+    setCourseAuthors(courseAuthors.filter((author) => author.id !== authorId));
+  };
+
   // title, description length should be at least 2 characters;
 
   const handleSubmit = (event) => {
@@ -92,30 +106,25 @@ export const CourseForm = ({ authorsList }) => {
       return false;
     }
 
-    if (courseId) {
-      let course = mockedCoursesList.find((course) => course.id === courseId);
-      course.title = title;
-      course.description = description;
-      course.duration = Number(duration);
-      course.authors = courseAuthors;
-    } else {
-      mockedCoursesList.push({
-        title: title,
-        description,
-        creationDate: getCurrentDate(),
-        duration: Number(duration),
-        authors: courseAuthors,
-      });
+    if (title.length < 2 || description.length < 2) {
+      alert("Title and description should be at least 2 characters.");
+      return false;
     }
 
-    navigate("/courses");
+    createCourse({
+      id: courseId,
+      title: title,
+      description,
+      duration: Number(duration),
+      authors: courseAuthors,
+    });
   };
 
   return (
     <div className={styles.container}>
       {courseId ? <h2>Update course</h2> : <h2>Create new course</h2>}
 
-      <form className="container mt-3" onSubmit={handleSubmit}>
+      <form className="container mt-3">
         <section className="row justify-content-between mt-3">
           <Input
             className="col-6"
@@ -170,13 +179,22 @@ export const CourseForm = ({ authorsList }) => {
 
             <h2>Authors</h2>
             {/* // use CreateAuthor component */}
+            <CreateAuthor onCreateAuthor={createAuthor}></CreateAuthor>
 
             <div className={styles.authorsContainer}>
               <h3>Authors List</h3>
 
               {/* // use 'map' to display all available autors. Reuse 'AuthorItem' component for each author */}
               {authorsList.map((author) => {
-                return <AuthorItem key={author.id} author={author} />;
+                return (
+                  <AuthorItem
+                    key={author.id}
+                    author={author}
+                    showAddButton={true}
+                    handleAddAuthor={() => handleAddAuthor(author.id)}
+                    showDeleteButton={false}
+                  />
+                );
               })}
             </div>
           </div>
@@ -186,7 +204,15 @@ export const CourseForm = ({ authorsList }) => {
 
             {courseAuthors.length ? (
               courseAuthors.map((author) => {
-                return <AuthorItem key={author.id} author={author} />;
+                return (
+                  <AuthorItem
+                    key={author.id}
+                    author={author}
+                    handleDeleteAuthor={() => handleDeleteAuthor(author.id)}
+                    showAddButton={false}
+                    showDeleteButton={true}
+                  />
+                );
               })
             ) : (
               <p className={styles.notification}>List is empty</p>
@@ -199,8 +225,9 @@ export const CourseForm = ({ authorsList }) => {
         {/* // reuse Button component for 'CREATE/UPDATE COURSE' button with
         // reuse Button component for 'CANCEL' button with */}
         <Button
-          buttonText={course ? "Update Course" : "Create Course"}
+          buttonText={courseId ? "Update Course" : "Create Course"}
           data-testid="createCourseButton"
+          handleClick={handleSubmit}
         />
       </div>
     </div>
