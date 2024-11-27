@@ -12,12 +12,14 @@ export const Input = ({
   inputValue,
   required,
   onChange,
+  type,
   "data-testid": dataTestId,
 }) => (
   <label className={labelClassName ?? styles.label}>
     {labelText}
     {labelExtras}
     <input
+      type={type || "text"}
       onChange={onChange}
       placeholder={placeholderText}
       className={className ?? styles.input}

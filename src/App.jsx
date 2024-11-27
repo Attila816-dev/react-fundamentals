@@ -10,6 +10,8 @@ import {
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { mockedAuthorsList, mockedCoursesList } from "./constants";
 import { getCurrentDate } from "./helpers";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 // Module 1:
 // * use mockedAuthorsList and mockedCoursesList mocked data
@@ -41,9 +43,11 @@ import { getCurrentDate } from "./helpers";
 
 function App() {
   let navigate = useNavigate();
+  const [courses, setCourses] = useState(mockedCoursesList);
+  const [authors, setAuthors] = useState(mockedAuthorsList);
 
   const handleUpdateCourse = (course) => {
-    let existingCourse = mockedCoursesList.find((c) => c.id === course.Id);
+    let existingCourse = courses.find((c) => c.id === course.Id);
     existingCourse.title = course.title;
     existingCourse.description = course.description;
     existingCourse.duration = course.duration;
@@ -52,13 +56,16 @@ function App() {
   };
 
   const handleAddCourse = (course) => {
-    mockedCoursesList.push({
+    let newCourses = [...courses];
+    newCourses.push({
       title: course.title,
       description: course.description,
       creationDate: getCurrentDate(),
       duration: course.duration,
       authors: course.authors,
+      id: uuidv4().toString(),
     });
+    setCourses(courses);
     navigate("/courses");
   };
 
@@ -66,13 +73,15 @@ function App() {
     if (authorName.length < 2) {
       alert("Author name should be longer than 2 characters.");
       return false;
-    } else if (mockedAuthorsList.find((author) => author.name === authorName)) {
+    } else if (authors.find((author) => author.name === authorName)) {
       alert("This author is already in the list.");
     } else {
-      mockedAuthorsList.push({
+      let newAuthors = [...authors];
+      newAuthors.push({
         name: authorName,
-        id: mockedAuthorsList.length + 1,
+        id: uuidv4().toString(),
       });
+      setAuthors(newAuthors);
     }
   };
 
@@ -84,29 +93,19 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={
-              <Courses
-                coursesList={mockedCoursesList}
-                authorsList={mockedAuthorsList}
-              />
-            }
+            element={<Courses coursesList={courses} authorsList={authors} />}
           />
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
           <Route
             path="/courses/:courseId"
-            element={
-              <CourseInfo
-                coursesList={mockedCoursesList}
-                authorsList={mockedAuthorsList}
-              />
-            }
+            element={<CourseInfo coursesList={courses} authorsList={authors} />}
           />
           <Route
             path="/courses/add"
             element={
               <CourseForm
-                authorsList={mockedAuthorsList}
+                authorsList={authors}
                 createCourse={handleAddCourse}
                 createAuthor={handleCreateAuthor}
               />
@@ -116,7 +115,7 @@ function App() {
             path="/courses/update/:courseId"
             element={
               <CourseForm
-                authorsList={mockedAuthorsList}
+                authorsList={authors}
                 createCourse={handleUpdateCourse}
                 createAuthor={handleCreateAuthor}
               />

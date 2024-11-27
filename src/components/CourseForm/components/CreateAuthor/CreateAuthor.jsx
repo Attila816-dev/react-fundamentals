@@ -28,7 +28,7 @@ export const CreateAuthor = ({ onCreateAuthor }) => {
       {/* // reuse Input component with data-testid="createAuthorInput" attribute
       //reuse Button component with data-testid="createAuthorButton" attribute */}
       <Input
-        labelText="Author Name"
+        labelText=""
         inputPlaceholder="Enter name..."
         type="text"
         id="createAuthorInput"
