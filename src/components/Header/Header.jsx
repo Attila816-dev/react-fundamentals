@@ -1,6 +1,6 @@
 import { Button } from "../../common/Button";
 import { Logo } from "./components/Logo";
-import { redirect, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import styles from "./styles.module.css";
 
@@ -36,6 +36,7 @@ import styles from "./styles.module.css";
 export const Header = () => {
   // write your code here
   const location = useLocation();
+  const navigate = useNavigate();
   const [showLogout, setShowLogout] = useState(true);
 
   const handleLogout = () => {
@@ -43,7 +44,7 @@ export const Header = () => {
       localStorage.removeItem("token");
     }
 
-    redirect("/login");
+    navigate("/login");
   };
 
   useEffect(() => {

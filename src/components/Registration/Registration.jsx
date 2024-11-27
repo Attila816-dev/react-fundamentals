@@ -11,7 +11,7 @@
 // // ** TASK DESCRIPTION ** - https://ebook.learn.epam.com/react-fundamentals/docs/module-2/home-task/components#registration-new-component
 
 import React, { useState } from "react";
-import { Link, useNavigate, redirect } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "../../common";
 import { createUser } from "../../services";
 
@@ -40,7 +40,7 @@ export const Registration = () => {
         email: email,
         password: password,
       });
-      redirect("/login");
+      navigate("/login");
     } catch (error) {
       console.log(error);
       alert("Registration failed.");
