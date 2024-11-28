@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { CourseCard, EmptyCourseList, SearchBar } from "./components";
 import styles from "./styles.module.css";
+import { getCoursesSelector, getAuthorsSelector } from "../../store/selectors";
 
 // Module 1:
 // * render list of components using 'CourseCard' component for each course
@@ -33,19 +35,22 @@ import styles from "./styles.module.css";
 //   ** Courses should display amount of CourseCard equal length of courses array.
 //   ** CourseForm should be shown after a click on the "Add new course" button.
 
-export const Courses = ({ coursesList, authorsList }) => {
+export const Courses = () => {
   // write your code here
 
   // for EmptyCourseList component container use data-testid="emptyContainer" attribute
   // for button in EmptyCourseList component add data-testid="addCourse" attribute
   let navigate = useNavigate();
-  const [filteredCourses, setFilteredCourses] = useState(coursesList);
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
     }
   }, [navigate]);
+
+  let coursesList = useSelector(getCoursesSelector);
+  let authorsList = useSelector(getAuthorsSelector);
+  const [filteredCourses, setFilteredCourses] = useState(coursesList);
 
   const handleSearchSubmit = (input) => {
     if (input.length === 0) {

@@ -39,7 +39,7 @@ export const CreateAuthor = ({ onCreateAuthor }) => {
       />
       <Button
         handleClick={() => {
-          onCreateAuthor({ name });
+          onCreateAuthor(name);
         }}
         data-testid="createAuthorButton"
         buttonText="Create Author"

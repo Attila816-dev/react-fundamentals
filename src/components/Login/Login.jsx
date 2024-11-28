@@ -20,13 +20,16 @@
 
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { Input, Button } from "../../common";
+import { setUserData } from "../../store/slices/userSlice";
 
 import styles from "./styles.module.css";
 import { login } from "../../services";
 
 export const Login = () => {
   let navigate = useNavigate();
+  let dispatch = useDispatch();
 
   const [showError, setShowError] = useState(false);
   const [email, setEmail] = useState("");
@@ -53,7 +56,7 @@ export const Login = () => {
     if (!data.successful) {
       throw new Error(data.result);
     } else {
-      return data;
+      dispatch(setUserData(data.result));
     }
   }
 
@@ -65,8 +68,7 @@ export const Login = () => {
         throw new Error("Email and password are required.");
       }
 
-      const data = await loginAuth({ email, password });
-      localStorage.setItem("token", data.result);
+      await loginAuth({ email, password });
       navigate("/courses");
     } catch (error) {
       console.log(error);

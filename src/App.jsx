@@ -7,11 +7,12 @@ import {
   Login,
   Registration,
 } from "./components";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import { mockedAuthorsList, mockedCoursesList } from "./constants";
-import { getCurrentDate } from "./helpers";
-import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { getAuthors, getCourses } from "./services";
+import { setCourses } from "./store/slices/coursesSlice";
+import { setAuthors } from "./store/slices/authorsSlice";
 
 // Module 1:
 // * use mockedAuthorsList and mockedCoursesList mocked data
@@ -42,48 +43,19 @@ import { v4 as uuidv4 } from "uuid";
 // * get authorized user info by 'user/me' GET request if 'localStorage' contains token
 
 function App() {
-  let navigate = useNavigate();
-  const [courses, setCourses] = useState(mockedCoursesList);
-  const [authors, setAuthors] = useState(mockedAuthorsList);
+  const dispatch = useDispatch();
 
-  const handleUpdateCourse = (course) => {
-    let existingCourse = courses.find((c) => c.id === course.Id);
-    existingCourse.title = course.title;
-    existingCourse.description = course.description;
-    existingCourse.duration = course.duration;
-    existingCourse.authors = course.authors;
-    navigate("/courses");
+  const fetchInitData = async () => {
+    const courses = await getCourses();
+    const authors = await getAuthors();
+    dispatch(setCourses(courses));
+    dispatch(setAuthors(authors));
   };
 
-  const handleAddCourse = (course) => {
-    let newCourses = [...courses];
-    newCourses.push({
-      title: course.title,
-      description: course.description,
-      creationDate: getCurrentDate(),
-      duration: course.duration,
-      authors: course.authors,
-      id: uuidv4().toString(),
-    });
-    setCourses(courses);
-    navigate("/courses");
-  };
-
-  const handleCreateAuthor = (authorName) => {
-    if (authorName.length < 2) {
-      alert("Author name should be longer than 2 characters.");
-      return false;
-    } else if (authors.find((author) => author.name === authorName)) {
-      alert("This author is already in the list.");
-    } else {
-      let newAuthors = [...authors];
-      newAuthors.push({
-        name: authorName,
-        id: uuidv4().toString(),
-      });
-      setAuthors(newAuthors);
-    }
-  };
+  useEffect(() => {
+    fetchInitData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // write your code here
   return (
@@ -91,36 +63,12 @@ function App() {
       <Header />
       <div className={styles.container}>
         <Routes>
-          <Route
-            path="/"
-            element={<Courses coursesList={courses} authorsList={authors} />}
-          />
+          <Route path="/" element={<Courses />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
-          <Route
-            path="/courses/:courseId"
-            element={<CourseInfo coursesList={courses} authorsList={authors} />}
-          />
-          <Route
-            path="/courses/add"
-            element={
-              <CourseForm
-                authorsList={authors}
-                createCourse={handleAddCourse}
-                createAuthor={handleCreateAuthor}
-              />
-            }
-          />
-          <Route
-            path="/courses/update/:courseId"
-            element={
-              <CourseForm
-                authorsList={authors}
-                createCourse={handleUpdateCourse}
-                createAuthor={handleCreateAuthor}
-              />
-            }
-          />
+          <Route path="/courses/:courseId" element={<CourseInfo />} />
+          <Route path="/courses/add" element={<CourseForm />} />
+          <Route path="/courses/update/:courseId" element={<CourseForm />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>

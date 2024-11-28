@@ -25,15 +25,23 @@ export const login = async (body) => {
   return data;
 };
 
-// export const getCourses = async () => {
-//   // write your code here
-//   return await response.json();
-// };
+export const getCourses = async () => {
+  // write your code here
+  const response = await fetch("http://localhost:4000/courses/all", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  return await response.json();
+};
 
-// export const getAuthors = async () => {
-//   // write your code here
-//   return await response.json();
-// };
+export const getAuthors = async () => {
+  // write your code here
+  const response = await fetch("http://localhost:4000/authors/all", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  return await response.json();
+};
 
 // export const getCurrentUser = async () => {
 //   // write your code here

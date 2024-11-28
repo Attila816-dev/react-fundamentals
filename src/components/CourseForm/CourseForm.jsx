@@ -47,23 +47,31 @@
 //   **  CourseForm 'Delete author' button click should delete an author from the course list.
 
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+import { getCoursesSelector, getAuthorsSelector } from "../../store/selectors";
 import { Button, Input } from "../../common";
 import { AuthorItem, CreateAuthor } from "./components";
-import { mockedCoursesList } from "../../constants";
-import { getCourseDuration } from "../../helpers";
+import { getCourseDuration, getCurrentDate } from "../../helpers";
 import styles from "./styles.module.css";
+import { saveCourse, updateCourse } from "../../store/slices/coursesSlice";
+import { saveAuthor } from "../../store/slices/authorsSlice";
 
-export const CourseForm = ({ authorsList, createCourse, createAuthor }) => {
+export const CourseForm = () => {
   //write your code here
   let { courseId } = useParams();
-  const course = mockedCoursesList.find((course) => course.id === courseId);
+  let navigate = useNavigate();
+  let coursesList = useSelector(getCoursesSelector);
+  let authorsList = useSelector(getAuthorsSelector);
+  const course = coursesList.find((course) => course.id === courseId);
 
   const [title, setTitle] = useState(course?.title ?? "");
   const [description, setDescription] = useState(course?.description ?? "");
   const [courseAuthors, setCourseAuthors] = useState(
     courseId ? [...course.authors] : []
   );
+  const dispatch = useDispatch();
 
   const [duration, setDuration] = useState(course?.duration ?? 0);
 
@@ -96,6 +104,22 @@ export const CourseForm = ({ authorsList, createCourse, createAuthor }) => {
     setCourseAuthors(courseAuthors.filter((author) => author.id !== authorId));
   };
 
+  const handleCreateAuthor = (authorName) => {
+    if (authorName.length < 2) {
+      alert("Author name should be longer than 2 characters.");
+      return false;
+    } else if (authorsList.find((author) => author.name === authorName)) {
+      alert("This author is already in the list.");
+    } else {
+      dispatch(
+        saveAuthor({
+          id: uuidv4().toString(),
+          name: authorName,
+        })
+      );
+    }
+  };
+
   // title, description length should be at least 2 characters;
 
   const handleSubmit = (event) => {
@@ -111,13 +135,31 @@ export const CourseForm = ({ authorsList, createCourse, createAuthor }) => {
       return false;
     }
 
-    createCourse({
-      id: courseId,
-      title: title,
-      description,
-      duration: Number(duration),
-      authors: courseAuthors,
-    });
+    if (courseId) {
+      dispatch(
+        updateCourse({
+          id: courseId,
+          creationDate: course.creationDate,
+          title: title,
+          description,
+          duration: Number(duration),
+          authors: courseAuthors,
+        })
+      );
+    } else {
+      dispatch(
+        saveCourse({
+          id: uuidv4().toString(),
+          creationDate: getCurrentDate(),
+          title: title,
+          description,
+          duration: Number(duration),
+          authors: courseAuthors,
+        })
+      );
+    }
+
+    navigate("/courses");
   };
 
   return (
@@ -179,7 +221,7 @@ export const CourseForm = ({ authorsList, createCourse, createAuthor }) => {
 
             <h2>Authors</h2>
             {/* // use CreateAuthor component */}
-            <CreateAuthor onCreateAuthor={createAuthor}></CreateAuthor>
+            <CreateAuthor onCreateAuthor={handleCreateAuthor}></CreateAuthor>
 
             <div className={styles.authorsContainer}>
               <h3>Authors List</h3>
