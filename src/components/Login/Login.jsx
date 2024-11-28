@@ -56,7 +56,7 @@ export const Login = () => {
     if (!data.successful) {
       throw new Error(data.result);
     } else {
-      dispatch(setUserData(data.result));
+      dispatch(setUserData(data.user));
     }
   }
 

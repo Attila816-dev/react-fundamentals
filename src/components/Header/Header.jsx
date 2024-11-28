@@ -3,6 +3,8 @@ import { Logo } from "./components/Logo";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import styles from "./styles.module.css";
+import { useDispatch } from "react-redux";
+import { removeUserData } from "../../store/slices/userSlice";
 
 // Module 1:
 // * add Logo and Button components
@@ -37,11 +39,12 @@ export const Header = () => {
   // write your code here
   const location = useLocation();
   const navigate = useNavigate();
+  let dispatch = useDispatch();
   const [showLogout, setShowLogout] = useState(true);
 
   const handleLogout = () => {
     if (localStorage.getItem("token")) {
-      localStorage.removeItem("token");
+      dispatch(removeUserData());
     }
 
     navigate("/login");

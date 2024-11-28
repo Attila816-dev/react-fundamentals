@@ -56,12 +56,12 @@ import { AuthorItem, CreateAuthor } from "./components";
 import { getCourseDuration, getCurrentDate } from "../../helpers";
 import styles from "./styles.module.css";
 import { saveCourse, updateCourse } from "../../store/slices/coursesSlice";
-import { saveAuthor } from "../../store/slices/authorsSlice";
 
 export const CourseForm = () => {
   //write your code here
   let { courseId } = useParams();
   let navigate = useNavigate();
+  const dispatch = useDispatch();
   let coursesList = useSelector(getCoursesSelector);
   let authorsList = useSelector(getAuthorsSelector);
   const course = coursesList.find((course) => course.id === courseId);
@@ -71,7 +71,6 @@ export const CourseForm = () => {
   const [courseAuthors, setCourseAuthors] = useState(
     courseId ? [...course.authors] : []
   );
-  const dispatch = useDispatch();
 
   const [duration, setDuration] = useState(course?.duration ?? 0);
 
@@ -102,22 +101,6 @@ export const CourseForm = () => {
 
   const handleDeleteAuthor = (authorId) => {
     setCourseAuthors(courseAuthors.filter((author) => author.id !== authorId));
-  };
-
-  const handleCreateAuthor = (authorName) => {
-    if (authorName.length < 2) {
-      alert("Author name should be longer than 2 characters.");
-      return false;
-    } else if (authorsList.find((author) => author.name === authorName)) {
-      alert("This author is already in the list.");
-    } else {
-      dispatch(
-        saveAuthor({
-          id: uuidv4().toString(),
-          name: authorName,
-        })
-      );
-    }
   };
 
   // title, description length should be at least 2 characters;
@@ -221,7 +204,7 @@ export const CourseForm = () => {
 
             <h2>Authors</h2>
             {/* // use CreateAuthor component */}
-            <CreateAuthor onCreateAuthor={handleCreateAuthor}></CreateAuthor>
+            <CreateAuthor></CreateAuthor>
 
             <div className={styles.authorsContainer}>
               <h3>Authors List</h3>
