@@ -63,9 +63,10 @@ function App() {
       <Header />
       <div className={styles.container}>
         <Routes>
-          <Route path="/" element={<Courses />} />
+          <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
+          <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:courseId" element={<CourseInfo />} />
           <Route path="/courses/add" element={<CourseForm />} />
           <Route path="/courses/update/:courseId" element={<CourseForm />} />

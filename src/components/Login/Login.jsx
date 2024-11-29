@@ -20,9 +20,10 @@
 
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Input, Button } from "../../common";
 import { setUserData } from "../../store/slices/userSlice";
+import { getUserTokenSelector } from "../../store/selectors";
 
 import styles from "./styles.module.css";
 import { login } from "../../services";
@@ -34,12 +35,14 @@ export const Login = () => {
   const [showError, setShowError] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  let token = useSelector(getUserTokenSelector);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
+    if (localStorage.getItem("token") || token) {
       navigate("/courses");
     }
-  }, [navigate]);
+    // eslint-disable-next-line
+  }, []);
 
   // write your code here
   const handleEmailInput = (event) => {
@@ -57,6 +60,7 @@ export const Login = () => {
       throw new Error(data.result);
     } else {
       dispatch(setUserData(data.user));
+      localStorage.setItem("token", data.user.token);
     }
   }
 

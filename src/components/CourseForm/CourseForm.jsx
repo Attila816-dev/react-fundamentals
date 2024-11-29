@@ -64,7 +64,9 @@ export const CourseForm = () => {
   const dispatch = useDispatch();
   let coursesList = useSelector(getCoursesSelector);
   let authorsList = useSelector(getAuthorsSelector);
-  const course = coursesList.find((course) => course.id === courseId);
+  const course = coursesList
+    ? coursesList.find((course) => course.id === courseId)
+    : {};
 
   const [title, setTitle] = useState(course?.title ?? "");
   const [description, setDescription] = useState(course?.description ?? "");

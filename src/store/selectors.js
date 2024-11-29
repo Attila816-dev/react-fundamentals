@@ -3,6 +3,6 @@
 
 export const getCoursesSelector = (state) => state.courses;
 export const getAuthorsSelector = (state) => state.authors;
-export const getUserNameSelector = (state) => state.user.name;
-export const getUserRoleSelector = (state) => state.user.role;
-export const getUserTokenSelector = (state) => state.user.token;
+export const getUserNameSelector = (state) => state.user && state.user.name;
+export const getUserRoleSelector = (state) => state.user && state.user.role;
+export const getUserTokenSelector = (state) => state.user && state.user.token;

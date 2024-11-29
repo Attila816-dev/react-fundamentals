@@ -16,14 +16,12 @@ export const userSlice = createSlice({
       state.token = payload.token;
       state.name = payload.name;
       state.email = payload.email;
-      localStorage.setItem("token", state.token);
     },
     removeUserData: (state) => {
       state.isAuth = false;
       state.token = undefined;
       state.name = "";
       state.email = "";
-      localStorage.removeItem("token");
     },
   },
 });

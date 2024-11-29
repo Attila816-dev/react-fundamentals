@@ -46,6 +46,7 @@ export const Courses = () => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
     }
+    // eslint-disable-next-line
   }, [navigate]);
 
   let coursesList = useSelector(getCoursesSelector);

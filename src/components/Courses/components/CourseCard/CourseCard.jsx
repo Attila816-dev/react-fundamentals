@@ -36,24 +36,39 @@
 //   ** CourseCard should display created date in the correct format.
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import { getCourseDuration, formatCreationDate } from "../../../../helpers";
+import { deleteCourse } from "../../../../store/slices/coursesSlice";
+import { Button } from "../../../../common/Button";
 
-// import deleteIcon from "../../../../assets/deleteButtonIcon.svg";
-// import editIcon from "../../../../assets/editButtonIcon.svg";
+import deleteIcon from "../../../../assets/deleteButtonIcon.svg";
+import editIcon from "../../../../assets/editButtonIcon.svg";
 
 import styles from "./styles.module.css";
 
 export const CourseCard = ({ course, authorsList }) => {
   // write your code here
+  let dispatch = useDispatch();
+  let navigate = useNavigate();
 
-  const authorNames = course.authors
-    .map((authorId) => {
-      const author = authorsList.find((author) => author.id === authorId);
-      return author.name;
-    })
-    .join(", ");
+  const handleDeleteCourse = () => {
+    dispatch(deleteCourse(course.id));
+  };
+
+  const handleEditCourse = () => {
+    navigate(`/courses/update/${course.id}`);
+  };
+
+  const authorNames = authorsList
+    ? course.authors
+        .map((authorId) => {
+          const author = authorsList.find((author) => author.id === authorId);
+          return author.name;
+        })
+        .join(", ")
+    : [];
 
   return (
     <div className={styles.cardContainer} data-testid="courseCard">
@@ -87,6 +102,24 @@ export const CourseCard = ({ course, authorsList }) => {
 				reuse Button component wrapped with Link from react-router with editButtonIcon from 'src/assets' for 'Update' button with
 						data-testid="updateCourse" 
 			*/}
+          <Button
+            className="btn btn-outline-primary"
+            type="button"
+            buttonText={
+              <img className={styles.logo} alt="logo" src={editIcon} />
+            }
+            handleClick={handleEditCourse}
+            data-testid="updateCourse"
+          />
+          <Button
+            className="btn btn-outline-primary"
+            type="button"
+            buttonText={
+              <img className={styles.logo} alt="logo" src={deleteIcon} />
+            }
+            handleClick={handleDeleteCourse}
+            data-testid="deleteCourse"
+          />
         </div>
       </div>
     </div>

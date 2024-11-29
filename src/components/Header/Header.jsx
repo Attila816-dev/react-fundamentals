@@ -45,6 +45,7 @@ export const Header = () => {
   const handleLogout = () => {
     if (localStorage.getItem("token")) {
       dispatch(removeUserData());
+      localStorage.removeItem("token");
     }
 
     navigate("/login");

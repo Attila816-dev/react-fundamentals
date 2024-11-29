@@ -32,7 +32,10 @@ export const CreateAuthor = () => {
     if (name.length < 2) {
       alert("Author name should be longer than 2 characters.");
       return false;
-    } else if (authorsList.find((author) => author.name === name)) {
+    } else if (
+      authorsList &&
+      authorsList.find((author) => author.name === name)
+    ) {
       alert("This author is already in the list.");
     } else {
       dispatch(
