@@ -3,7 +3,11 @@ import { useNavigate, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { CourseCard, EmptyCourseList, SearchBar } from "./components";
 import styles from "./styles.module.css";
-import { getCoursesSelector, getAuthorsSelector } from "../../store/selectors";
+import {
+  getCoursesSelector,
+  getAuthorsSelector,
+  getUserTokenSelector,
+} from "../../store/selectors";
 
 // Module 1:
 // * render list of components using 'CourseCard' component for each course
@@ -41,9 +45,10 @@ export const Courses = () => {
   // for EmptyCourseList component container use data-testid="emptyContainer" attribute
   // for button in EmptyCourseList component add data-testid="addCourse" attribute
   let navigate = useNavigate();
+  let token = useSelector(getUserTokenSelector);
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
+    if (!token && !localStorage.getItem("token")) {
       navigate("/login");
     }
     // eslint-disable-next-line
