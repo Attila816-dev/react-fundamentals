@@ -3,8 +3,9 @@ import { Logo } from "./components/Logo";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import styles from "./styles.module.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { removeUserData } from "../../store/slices/userSlice";
+import { getUserNameSelector } from "../../store/selectors";
 
 // Module 1:
 // * add Logo and Button components
@@ -41,6 +42,7 @@ export const Header = () => {
   const navigate = useNavigate();
   let dispatch = useDispatch();
   const [showLogout, setShowLogout] = useState(true);
+  let userName = useSelector(getUserNameSelector);
 
   const handleLogout = () => {
     if (localStorage.getItem("token")) {
@@ -66,7 +68,7 @@ export const Header = () => {
       <div className={styles.userContainer}>
         {showLogout && (
           <>
-            <p className={styles.userName}>Harry Potter</p>
+            <p className={styles.userName}>{userName}</p>
             {localStorage.getItem("token") && (
               <Button
                 buttonText="Logout"

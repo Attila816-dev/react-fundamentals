@@ -91,7 +91,7 @@ export const CourseInfo = () => {
         className="btn btn-outline-primary mt-3"
         data-testid="back"
       >
-        Back to courses
+        Back
       </Link>
     </div>
   );

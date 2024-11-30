@@ -91,13 +91,12 @@ export const CourseForm = () => {
   const handleAddAuthor = (authorId) => {
     let newAuthorList = [...courseAuthors];
 
-    if (newAuthorList.find((author) => author.id === authorId)) {
+    if (newAuthorList.find((id) => id === authorId)) {
       alert("This author is already in the course author list.");
       return;
     }
 
-    let newAuthor = authorsList.find((author) => author.id === authorId);
-    newAuthorList.push(newAuthor);
+    newAuthorList.push(authorId);
     setCourseAuthors(newAuthorList);
   };
 
@@ -230,12 +229,15 @@ export const CourseForm = () => {
             <h2>Course authors</h2>
 
             {courseAuthors.length ? (
-              courseAuthors.map((author) => {
+              courseAuthors.map((authorId) => {
+                const courseAuthor = authorsList.find(
+                  (author) => author.id === authorId
+                );
                 return (
                   <AuthorItem
-                    key={author.id}
-                    author={author}
-                    handleDeleteAuthor={() => handleDeleteAuthor(author.id)}
+                    key={authorId}
+                    author={courseAuthor}
+                    handleDeleteAuthor={() => handleDeleteAuthor(authorId)}
                     showAddButton={false}
                     showDeleteButton={true}
                   />
