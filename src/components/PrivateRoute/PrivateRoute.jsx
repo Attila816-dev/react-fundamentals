@@ -9,19 +9,18 @@
 // ** TASK DESCRIPTION ** - https://ebook.learn.epam.com/react-fundamentals/docs/module-4/home-task/components#private-route-new-component
 
 import React from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getUserRoleSelector } from "../../store/selectors";
 
-export const PrivateRoute = () => {
+export const PrivateRoute = ({ children }) => {
   //wriet your code here
-  const location = useLocation();
   const userRole = useSelector(getUserRoleSelector);
   return userRole === "admin" ? (
-    <Outlet />
+    children
   ) : localStorage.getItem("token") ? (
-    <Navigate to="/courses" state={{ from: location }} replace />
+    <Navigate to="/courses" />
   ) : (
-    <Navigate to="/login" state={{ from: location }} replace />
+    <Navigate to="/login" />
   );
 };

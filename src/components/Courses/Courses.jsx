@@ -6,7 +6,7 @@ import styles from "./styles.module.css";
 import {
   getCoursesSelector,
   getAuthorsSelector,
-  getCurrentUserRole,
+  getUserRoleSelector,
 } from "../../store/selectors";
 import store from "../../store/index";
 import { getUserThunk } from "../../store/thunks/userThunk";
@@ -47,7 +47,7 @@ export const Courses = () => {
   // for EmptyCourseList component container use data-testid="emptyContainer" attribute
   // for button in EmptyCourseList component add data-testid="addCourse" attribute
   let navigate = useNavigate();
-  let userRole = useSelector(getCurrentUserRole);
+  let userRole = useSelector(getUserRoleSelector);
   let coursesList = useSelector(getCoursesSelector);
   let authorsList = useSelector(getAuthorsSelector);
   const [filteredCourses, setFilteredCourses] = useState(coursesList);
@@ -61,7 +61,7 @@ export const Courses = () => {
     }
 
     // eslint-disable-next-line
-  }, [navigate, courses, dispatch, userRole]);
+  }, [navigate, coursesList, userRole]);
 
   const handleSearchSubmit = (input) => {
     if (input.length === 0) {

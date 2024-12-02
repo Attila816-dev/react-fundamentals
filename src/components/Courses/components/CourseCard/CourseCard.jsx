@@ -37,10 +37,10 @@
 
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 
 import { getCourseDuration, formatCreationDate } from "../../../../helpers";
-import { deleteCourse } from "../../../../store/slices/coursesSlice";
+import { deleteCourseThunk } from "../../../../store/thunks/coursesThunk";
+import store from "../../../../store/index";
 import { Button } from "../../../../common/Button";
 
 import deleteIcon from "../../../../assets/deleteButtonIcon.svg";
@@ -50,11 +50,10 @@ import styles from "./styles.module.css";
 
 export const CourseCard = ({ course, authorsList, userRole }) => {
   // write your code here
-  let dispatch = useDispatch();
   let navigate = useNavigate();
 
   const handleDeleteCourse = () => {
-    dispatch(deleteCourse(course.id));
+    store.dispatch(deleteCourseThunk(course.id));
   };
 
   const handleEditCourse = () => {

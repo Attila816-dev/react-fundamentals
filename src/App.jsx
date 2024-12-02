@@ -64,10 +64,22 @@ function App() {
           <Route path="/registration" element={<Registration />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:courseId" element={<CourseInfo />} />
-          <Route element={<PrivateRoute />}>
-            <Route path="/courses/add" element={<CourseForm />} />
-            <Route path="/courses/update/:courseId" element={<CourseForm />} />
-          </Route>
+          <Route
+            path="/courses/add"
+            element={
+              <PrivateRoute>
+                <CourseForm />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/courses/update/:courseId"
+            element={
+              <PrivateRoute>
+                <CourseForm />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </div>
     </div>
