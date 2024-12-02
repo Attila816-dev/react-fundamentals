@@ -6,8 +6,10 @@ import styles from "./styles.module.css";
 import {
   getCoursesSelector,
   getAuthorsSelector,
-  getUserTokenSelector,
+  getCurrentUserRole,
 } from "../../store/selectors";
+import store from "../../store/index";
+import { getUserThunk } from "../../store/thunks/userThunk";
 
 // Module 1:
 // * render list of components using 'CourseCard' component for each course
@@ -45,18 +47,21 @@ export const Courses = () => {
   // for EmptyCourseList component container use data-testid="emptyContainer" attribute
   // for button in EmptyCourseList component add data-testid="addCourse" attribute
   let navigate = useNavigate();
-  let token = useSelector(getUserTokenSelector);
-
-  useEffect(() => {
-    if (!token && !localStorage.getItem("token")) {
-      navigate("/login");
-    }
-    // eslint-disable-next-line
-  }, [navigate]);
-
+  let userRole = useSelector(getCurrentUserRole);
   let coursesList = useSelector(getCoursesSelector);
   let authorsList = useSelector(getAuthorsSelector);
   const [filteredCourses, setFilteredCourses] = useState(coursesList);
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    } else {
+      store.dispatch(getUserThunk());
+      setFilteredCourses(coursesList);
+    }
+
+    // eslint-disable-next-line
+  }, [navigate, courses, dispatch, userRole]);
 
   const handleSearchSubmit = (input) => {
     if (input.length === 0) {
@@ -93,10 +98,11 @@ export const Courses = () => {
             key={course.id}
             course={course}
             authorsList={authorsList}
+            userRole={userRole}
           />
         );
       })}
-      {filteredCourses.length ? (
+      {userRole === "admin" ? (
         <Link to="/courses/add" data-testid="addCourse">
           Add new course
         </Link>

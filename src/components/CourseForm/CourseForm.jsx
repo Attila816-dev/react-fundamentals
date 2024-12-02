@@ -48,20 +48,22 @@
 
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
+import { useSelector } from "react-redux";
 import { getCoursesSelector, getAuthorsSelector } from "../../store/selectors";
 import { Button, Input } from "../../common";
 import { AuthorItem, CreateAuthor } from "./components";
-import { getCourseDuration, getCurrentDate } from "../../helpers";
+import { getCourseDuration } from "../../helpers";
 import styles from "./styles.module.css";
-import { saveCourse, updateCourse } from "../../store/slices/coursesSlice";
+import {
+  createCourseThunk,
+  updateCourseThunk,
+} from "../../store/thunks/coursesThunk";
+import store from "../../store/index";
 
 export const CourseForm = () => {
   //write your code here
   let { courseId } = useParams();
   let navigate = useNavigate();
-  const dispatch = useDispatch();
   let coursesList = useSelector(getCoursesSelector);
   let authorsList = useSelector(getAuthorsSelector);
   const course = coursesList
@@ -120,22 +122,19 @@ export const CourseForm = () => {
     }
 
     if (courseId) {
-      dispatch(
-        updateCourse({
+      store.dispatch(
+        updateCourseThunk({
           id: courseId,
-          creationDate: course.creationDate,
-          title: title,
+          title,
           description,
           duration: Number(duration),
           authors: courseAuthors,
         })
       );
     } else {
-      dispatch(
-        saveCourse({
-          id: uuidv4().toString(),
-          creationDate: getCurrentDate(),
-          title: title,
+      store.dispatch(
+        createCourseThunk({
+          title,
           description,
           duration: Number(duration),
           authors: courseAuthors,
@@ -204,7 +203,6 @@ export const CourseForm = () => {
             </div>
 
             <h2>Authors</h2>
-            {/* // use CreateAuthor component */}
             <CreateAuthor></CreateAuthor>
 
             <div className={styles.authorsContainer}>

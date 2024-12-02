@@ -5,15 +5,14 @@ import {
   CourseForm,
   CourseInfo,
   Login,
+  PrivateRoute,
   Registration,
 } from "./components";
-import { Navigate, Route, Routes } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { Route, Routes } from "react-router-dom";
 import { useEffect } from "react";
-import { getAuthors, getCourses } from "./services";
-import { setCourses } from "./store/slices/coursesSlice";
-import { setAuthors } from "./store/slices/authorsSlice";
-import { getUserTokenSelector } from "./store/selectors";
+import { getAuthorsThunk } from "./store/thunks/authorsThunk";
+import { getCoursesThunk } from "./store/thunks/coursesThunk";
+import store from "./store/index";
 
 // Module 1:
 // * use mockedAuthorsList and mockedCoursesList mocked data
@@ -44,14 +43,9 @@ import { getUserTokenSelector } from "./store/selectors";
 // * get authorized user info by 'user/me' GET request if 'localStorage' contains token
 
 function App() {
-  const dispatch = useDispatch();
-  let token = useSelector(getUserTokenSelector);
-
   const fetchInitData = async () => {
-    const courses = await getCourses();
-    const authors = await getAuthors();
-    dispatch(setCourses(courses));
-    dispatch(setAuthors(authors));
+    store.dispatch(getAuthorsThunk());
+    store.dispatch(getCoursesThunk());
   };
 
   useEffect(() => {
@@ -65,23 +59,15 @@ function App() {
       <Header />
       <div className={styles.container}>
         <Routes>
-          {!token ? (
-            <Route path="/" element={<Navigate to="/login" />} />
-          ) : (
-            <>
-              <Route path="/" element={<Courses />} />
-              <Route path="/courses" element={<Courses />} />
-              <Route path="/courses/:courseId" element={<CourseInfo />} />
-              <Route path="/courses/add" element={<CourseForm />} />
-              <Route
-                path="/courses/update/:courseId"
-                element={<CourseForm />}
-              />
-            </>
-          )}
+          <Route path="/" element={<Courses />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:courseId" element={<CourseInfo />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/courses/add" element={<CourseForm />} />
+            <Route path="/courses/update/:courseId" element={<CourseForm />} />
+          </Route>
         </Routes>
       </div>
     </div>

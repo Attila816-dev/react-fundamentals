@@ -48,7 +48,7 @@ import editIcon from "../../../../assets/editButtonIcon.svg";
 
 import styles from "./styles.module.css";
 
-export const CourseCard = ({ course, authorsList }) => {
+export const CourseCard = ({ course, authorsList, userRole }) => {
   // write your code here
   let dispatch = useDispatch();
   let navigate = useNavigate();
@@ -102,24 +102,28 @@ export const CourseCard = ({ course, authorsList }) => {
 				reuse Button component wrapped with Link from react-router with editButtonIcon from 'src/assets' for 'Update' button with
 						data-testid="updateCourse" 
 			*/}
-          <Button
-            className="btn btn-outline-primary"
-            type="button"
-            buttonText={
-              <img className={styles.logo} alt="logo" src={editIcon} />
-            }
-            handleClick={handleEditCourse}
-            data-testid="updateCourse"
-          />
-          <Button
-            className="btn btn-outline-primary"
-            type="button"
-            buttonText={
-              <img className={styles.logo} alt="logo" src={deleteIcon} />
-            }
-            handleClick={handleDeleteCourse}
-            data-testid="deleteCourse"
-          />
+          {userRole === "ADMIN" && (
+            <>
+              <Button
+                className="btn btn-outline-primary"
+                type="button"
+                buttonText={
+                  <img className={styles.logo} alt="logo" src={editIcon} />
+                }
+                handleClick={handleEditCourse}
+                data-testid="updateCourse"
+              />
+              <Button
+                className="btn btn-outline-primary"
+                type="button"
+                buttonText={
+                  <img className={styles.logo} alt="logo" src={deleteIcon} />
+                }
+                handleClick={handleDeleteCourse}
+                data-testid="deleteCourse"
+              />
+            </>
+          )}
         </div>
       </div>
     </div>
