@@ -70,7 +70,6 @@ export const Login = () => {
       navigate("/courses");
     } catch (error) {
       console.log(error);
-      alert("Login failed.");
     }
   };
 

@@ -43,7 +43,6 @@ export const Registration = () => {
       navigate("/login");
     } catch (error) {
       console.log(error);
-      alert("Registration failed.");
     }
   };
 

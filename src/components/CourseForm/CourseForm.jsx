@@ -83,7 +83,7 @@ export const CourseForm = ({ authorsList, createCourse, createAuthor }) => {
     let newAuthorList = [...courseAuthors];
 
     if (newAuthorList.find((author) => author.id === authorId)) {
-      alert("This author is already in the course author list.");
+      console.log("This author is already in the course author list.");
       return;
     }
 
@@ -102,12 +102,12 @@ export const CourseForm = ({ authorsList, createCourse, createAuthor }) => {
     event.preventDefault();
 
     if (courseAuthors.length === 0) {
-      alert("All fields are required.");
+      console.log("All fields are required.");
       return false;
     }
 
     if (title.length < 2 || description.length < 2) {
-      alert("Title and description should be at least 2 characters.");
+      console.log("Title and description should be at least 2 characters.");
       return false;
     }
 
@@ -178,7 +178,6 @@ export const CourseForm = ({ authorsList, createCourse, createAuthor }) => {
             </div>
 
             <h2>Authors</h2>
-            {/* // use CreateAuthor component */}
             <CreateAuthor onCreateAuthor={createAuthor}></CreateAuthor>
 
             <div className={styles.authorsContainer}>

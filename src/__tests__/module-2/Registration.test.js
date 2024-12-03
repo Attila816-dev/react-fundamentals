@@ -1,10 +1,16 @@
 import "@testing-library/jest-dom";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { Registration } from "../../components/Registration/Registration";
 import * as services from "../../services";
 
 const mockedUsedNavigate = jest.fn();
+
+const renderComponent = async (markup) => {
+  await act(async () => {
+    render(markup);
+  });
+};
 
 beforeEach(() => {
   jest
@@ -27,8 +33,8 @@ beforeEach(() => {
 });
 
 describe("Registration", () => {
-  test("should render the registration form with 3 inputs, login info text and link", () => {
-    render(
+  test("should render the registration form with 3 inputs, login info text and link", async () => {
+    await renderComponent(
       <MemoryRouter>
         <Registration />
       </MemoryRouter>
@@ -42,7 +48,7 @@ describe("Registration", () => {
   });
 
   test('should submit the registration form, call the "createUser" service with the entered name, email and password', async () => {
-    render(
+    await renderComponent(
       <MemoryRouter>
         <Registration />
       </MemoryRouter>
@@ -58,7 +64,9 @@ describe("Registration", () => {
       target: { value: "password123" },
     });
 
-    fireEvent.click(screen.getByRole("button"));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button"));
+    });
 
     expect(services.createUser).toHaveBeenCalledTimes(1);
     await expect(services.createUser).toHaveBeenCalledWith({
@@ -69,7 +77,7 @@ describe("Registration", () => {
   });
 
   test('should render the "Password is required" validation message and NOT call registration service', async () => {
-    render(
+    await renderComponent(
       <MemoryRouter>
         <Registration setName={jest.fn()} />
       </MemoryRouter>
@@ -85,7 +93,7 @@ describe("Registration", () => {
     expect(services.createUser).not.toHaveBeenCalled();
   });
   test('should render the "Email is required" validation message and NOT call registration service', async () => {
-    render(
+    await renderComponent(
       <MemoryRouter>
         <Registration setName={jest.fn()} />
       </MemoryRouter>
@@ -101,7 +109,7 @@ describe("Registration", () => {
     expect(services.createUser).not.toHaveBeenCalled();
   });
   test('should render the "Name is required" validation message and NOT call registration service', async () => {
-    render(
+    await renderComponent(
       <MemoryRouter>
         <Registration setName={jest.fn()} />
       </MemoryRouter>

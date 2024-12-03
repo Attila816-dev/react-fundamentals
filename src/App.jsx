@@ -71,10 +71,10 @@ function App() {
 
   const handleCreateAuthor = (authorName) => {
     if (authorName.length < 2) {
-      alert("Author name should be longer than 2 characters.");
+      console.log("Author name should be longer than 2 characters.");
       return false;
     } else if (authors.find((author) => author.name === authorName)) {
-      alert("This author is already in the list.");
+      console.log("This author is already in the list.");
     } else {
       let newAuthors = [...authors];
       newAuthors.push({
