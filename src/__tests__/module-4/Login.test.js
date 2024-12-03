@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent, waitFor, act } from "@testing-library/react";
 import { Provider } from "react-redux";
 import configureMockStore from "redux-mock-store";
 import { Login } from "../../components/Login";
@@ -13,8 +13,16 @@ jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: () => jest.fn(),
   useLocation: () => ({ pathname: "/mock/path" }),
-  Link: () => jest.fn(),
+  Link: ({ children, to }) => <a href={to}>{children}</a>,
 }));
+
+const renderComponent = async (markup) => {
+  let result = null;
+  await act(async () => {
+    result = render(markup);
+  });
+  return result; // This allows you to use query functions like getByText in your tests
+};
 
 describe("Login", () => {
   it("should add token to localStorage immediately after successful login and save user data to the store (setUserData action from userSlice with data from login service should be called)", async () => {
@@ -32,7 +40,7 @@ describe("Login", () => {
 
     const store = mockStore({});
 
-    const { getByLabelText, getByRole } = render(
+    const { getByLabelText, getByRole } = await renderComponent(
       <Provider store={store}>
         <Login />
       </Provider>

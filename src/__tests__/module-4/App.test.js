@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import App from "../../App";
 import { Provider } from "react-redux";
@@ -63,6 +63,12 @@ const authors = [
 
 const mockStore = configureMockStore([thunk]);
 
+const renderComponent = (markup) => {
+  act(() => {
+    render(markup);
+  });
+};
+
 const store = mockStore({
   authors,
   courses,
@@ -94,7 +100,7 @@ describe("App", () => {
 
   test('should render Login component when "token" is not present in localStorage and route "/"', () => {
     localStorage.removeItem("token");
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
           <App />
@@ -109,7 +115,7 @@ describe("App", () => {
 
   test("should switch to registration page from login page on registration link click", () => {
     localStorage.removeItem("token");
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
           <App />
@@ -128,7 +134,7 @@ describe("App", () => {
 
   test('should render Registration component if route "/registration"', () => {
     localStorage.removeItem("token");
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/registration"]}>
           <App />
@@ -143,7 +149,7 @@ describe("App", () => {
 
   test("should switch to login page from registration page on login link click", () => {
     localStorage.removeItem("token");
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/registration"]}>
           <App />
@@ -173,7 +179,7 @@ describe("App", () => {
       },
     });
 
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
           <App />
@@ -187,7 +193,7 @@ describe("App", () => {
   });
 
   test('should render CourseForm component if role admin and url "/courses/add"', () => {
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/courses/add"]}>
           <App />
@@ -209,7 +215,7 @@ describe("App", () => {
         token: "token",
       },
     });
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/courses/add"]}>
           <App />
@@ -223,7 +229,7 @@ describe("App", () => {
     expect(courseElements[0]).toBeInTheDocument();
   });
   test('should render "CourseForm" (update mode) component if role admin and url "/courses/update/:courseId"', () => {
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/courses/update/1"]}>
           <App />
@@ -245,7 +251,7 @@ describe("App", () => {
         token: "token",
       },
     });
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/courses/update/1"]}>
           <App />
@@ -260,7 +266,7 @@ describe("App", () => {
   });
 
   test('should render CourseInfo component with data-testid="courseInfo" when route "/courses/:courseId"', () => {
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/courses/1"]}>
           <App />
@@ -272,7 +278,7 @@ describe("App", () => {
   });
 
   test('should remove course on Delete button with data-testid="delete" click (deleteCourseThunk should be called with course id)', async () => {
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/courses"]}>
           <App />
@@ -296,7 +302,7 @@ describe("App", () => {
       },
     });
 
-    render(
+    renderComponent(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
           <App />
