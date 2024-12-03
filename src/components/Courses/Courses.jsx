@@ -102,7 +102,7 @@ export const Courses = () => {
           />
         );
       })}
-      {userRole === "admin" ? (
+      {filteredCourses.length && userRole?.toUpperCase() === "ADMIN" ? (
         <Link to="/courses/add" data-testid="addCourse">
           Add new course
         </Link>

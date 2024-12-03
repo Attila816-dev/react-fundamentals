@@ -101,7 +101,7 @@ export const CourseCard = ({ course, authorsList, userRole }) => {
 				reuse Button component wrapped with Link from react-router with editButtonIcon from 'src/assets' for 'Update' button with
 						data-testid="updateCourse" 
 			*/}
-          {userRole === "ADMIN" && (
+          {userRole?.toUpperCase() === "ADMIN" && (
             <>
               <Button
                 className="btn btn-outline-primary"
