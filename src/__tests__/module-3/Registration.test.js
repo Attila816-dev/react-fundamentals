@@ -1,10 +1,16 @@
 import "@testing-library/jest-dom";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { Registration } from "../../components/Registration/Registration";
 import * as services from "../../services";
 
 const mockedUsedNavigate = jest.fn();
+
+const renderComponent = (markup) => {
+  act(() => {
+    render(markup);
+  });
+};
 
 beforeEach(() => {
   jest
@@ -28,7 +34,7 @@ beforeEach(() => {
 
 describe("Registration", () => {
   test("should render the registration form with 3 inputs, login info text and link", () => {
-    render(
+    renderComponent(
       <MemoryRouter>
         <Registration />
       </MemoryRouter>
@@ -42,7 +48,7 @@ describe("Registration", () => {
   });
 
   test("should submits registration form (calls createUser service with entered name, email and password)", async () => {
-    render(
+    renderComponent(
       <MemoryRouter>
         <Registration />
       </MemoryRouter>
@@ -58,7 +64,9 @@ describe("Registration", () => {
       target: { value: "password123" },
     });
 
-    fireEvent.click(screen.getByRole("button"));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button"));
+    });
 
     expect(services.createUser).toHaveBeenCalledTimes(1);
     await expect(services.createUser).toHaveBeenCalledWith({
