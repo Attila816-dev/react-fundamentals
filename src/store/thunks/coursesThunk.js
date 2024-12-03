@@ -8,14 +8,14 @@ import {
 export const getCoursesThunk = () => {
   return async function (dispatch) {
     const courses = await getCourses();
-    dispatch({ type: "courses/setCourses", payload: courses });
+    dispatch({ type: "courses/setCourses", payload: courses.result });
   };
 };
 
 export const createCourseThunk = (course) => {
   return async function (dispatch) {
     const response = await createCourse(course, localStorage.getItem("token"));
-    dispatch({ type: "courses/saveCourse", payload: response });
+    dispatch({ type: "courses/saveCourse", payload: response.result });
   };
 };
 
@@ -25,7 +25,7 @@ export const updateCourseThunk = (course) => {
       course,
       localStorage.getItem("token")
     );
-    dispatch({ type: "courses/updateCourse", payload: response });
+    dispatch({ type: "courses/updateCourse", payload: response.result });
   };
 };
 

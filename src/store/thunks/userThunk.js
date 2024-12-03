@@ -3,7 +3,7 @@ import { getCurrentUser, logout } from "../../services";
 export const getUserThunk = () => {
   return async function (dispatch) {
     const user = await getCurrentUser(localStorage.getItem("token"));
-    dispatch({ type: "user/setUserData", payload: user });
+    dispatch({ type: "user/setUserData", payload: user.result });
   };
 };
 

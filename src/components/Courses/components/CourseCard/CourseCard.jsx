@@ -36,11 +36,13 @@
 //   ** CourseCard should display created date in the correct format.
 
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
+import { useSelector } from "react-redux";
 import { getCourseDuration, formatCreationDate } from "../../../../helpers";
 import { deleteCourseThunk } from "../../../../store/thunks/coursesThunk";
 import store from "../../../../store/index";
+import { getUserRoleSelector } from "../../../../store/selectors";
 import { Button } from "../../../../common/Button";
 
 import deleteIcon from "../../../../assets/deleteButtonIcon.svg";
@@ -48,16 +50,12 @@ import editIcon from "../../../../assets/editButtonIcon.svg";
 
 import styles from "./styles.module.css";
 
-export const CourseCard = ({ course, authorsList, userRole }) => {
+export const CourseCard = ({ course, authorsList }) => {
   // write your code here
-  let navigate = useNavigate();
+  let userRole = useSelector(getUserRoleSelector);
 
   const handleDeleteCourse = () => {
     store.dispatch(deleteCourseThunk(course.id));
-  };
-
-  const handleEditCourse = () => {
-    navigate(`/courses/update/${course.id}`);
   };
 
   const authorNames = authorsList
@@ -103,15 +101,12 @@ export const CourseCard = ({ course, authorsList, userRole }) => {
 			*/}
           {userRole?.toUpperCase() === "ADMIN" && (
             <>
-              <Button
-                className="btn btn-outline-primary"
-                type="button"
-                buttonText={
-                  <img className={styles.logo} alt="logo" src={editIcon} />
-                }
-                handleClick={handleEditCourse}
+              <Link
+                to={`/courses/update/${course.id}`}
                 data-testid="updateCourse"
-              />
+              >
+                <img className={styles.logo} alt="logo" src={editIcon} />
+              </Link>
               <Button
                 className="btn btn-outline-primary"
                 type="button"

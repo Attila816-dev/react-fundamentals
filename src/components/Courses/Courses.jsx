@@ -98,7 +98,6 @@ export const Courses = () => {
             key={course.id}
             course={course}
             authorsList={authorsList}
-            userRole={userRole}
           />
         );
       })}
